@@ -23,17 +23,6 @@ virtualHost:
           name: petstore
           namespace: gloo-system
   - matchers:
-    - prefix: /petstore/findPets
-    routeAction:
-      single:
-        destinationSpec:
-          rest:
-            functionName: findPets
-            parameters: {}
-        upstream:
-          name: petstore
-          namespace: gloo-system
-  - matchers:
     - prefix: /petstore/findWithId
     routeAction:
       single:
