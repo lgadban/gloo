@@ -11,7 +11,7 @@ directoryConfigSource:
   directory: /data/config
 directorySecretSource:
   directory: /data/secret
-refreshRate: 60s
+refreshRate: 10s
 watchNamespaces:
 - gloo-system
 
