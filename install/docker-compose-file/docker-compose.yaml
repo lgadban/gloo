@@ -34,9 +34,19 @@ services:
     - "19000:19000"
     restart: always
 
+  #extauth:
+  #  image: quay.io/solo-io/extauth-ee:1.3.0
+  #  environment:
+  #  - SERVICE_NAME=ext-auth
+  #  - GLOO_ADDRESS=gloo:9977
+  #  - SERVER_PORT=8083
+  #  ports:
+  #  - "8083:8083"
+
+
  # example application, the swagger petstore
   petstore:
-    image: ${PETSTORE_REPO:-quay.io/solo-io}/petstore:v1
+    image: soloio/petstore-example:latest
     ports: 
     - "8090:8080"
     restart: always

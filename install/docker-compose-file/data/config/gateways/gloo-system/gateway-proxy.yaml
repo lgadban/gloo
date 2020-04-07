@@ -1,0 +1,19 @@
+bindAddress: '::'
+bindPort: 8080
+httpGateway: {}
+metadata:
+  annotations:
+    origin: default
+  name: gateway-proxy
+  namespace: gloo-system
+  resourceVersion: "3"
+proxyNames:
+- gateway-proxy
+status:
+  reportedBy: gateway
+  state: Accepted
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: Accepted
+useProxyProto: false

@@ -1,0 +1,56 @@
+listeners:
+- bindAddress: '::'
+  bindPort: 8080
+  httpListener:
+    virtualHosts:
+    - domains:
+      - '*'
+      metadata:
+        sources:
+        - kind: '*v1.VirtualService'
+          name: petstore
+          namespace: gloo-system
+          observedGeneration: 0
+      name: gloo-system.petstore
+      routes:
+      - matchers:
+        - prefix: /
+        metadata:
+          sources:
+          - kind: '*v1.VirtualService'
+            name: petstore
+            namespace: gloo-system
+            observedGeneration: 0
+        routeAction:
+          single:
+            upstream:
+              name: petstore
+              namespace: gloo-system
+  metadata:
+    sources:
+    - kind: '*v1.Gateway'
+      name: gateway-proxy
+      namespace: gloo-system
+      observedGeneration: 0
+  name: listener-::-8080
+  useProxyProto: false
+- bindAddress: '::'
+  bindPort: 8443
+  httpListener: {}
+  metadata:
+    sources:
+    - kind: '*v1.Gateway'
+      name: gateway-proxy-ssl
+      namespace: gloo-system
+      observedGeneration: 0
+  name: listener-::-8443
+  useProxyProto: false
+metadata:
+  labels:
+    created_by: gateway
+  name: gateway-proxy
+  namespace: gloo-system
+  resourceVersion: "3"
+status:
+  reportedBy: gloo
+  state: Accepted

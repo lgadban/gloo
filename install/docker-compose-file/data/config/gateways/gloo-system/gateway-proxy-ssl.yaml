@@ -1,0 +1,20 @@
+bindAddress: '::'
+bindPort: 8443
+httpGateway: {}
+metadata:
+  annotations:
+    origin: default
+  name: gateway-proxy-ssl
+  namespace: gloo-system
+  resourceVersion: "3"
+proxyNames:
+- gateway-proxy
+ssl: true
+status:
+  reportedBy: gateway
+  state: Accepted
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: Accepted
+useProxyProto: false
