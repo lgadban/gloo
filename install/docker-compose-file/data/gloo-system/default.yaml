@@ -5,6 +5,10 @@ metadata:
   namespace: gloo-system
 devMode: true
 discoveryNamespace: gloo-system
+extauth:
+  extauthzServerRef:
+    name: extauth
+    namespace: gloo-system
 directoryArtifactSource:
   directory: /data/artifact
 directoryConfigSource:

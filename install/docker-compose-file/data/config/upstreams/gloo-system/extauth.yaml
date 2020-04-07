@@ -1,0 +1,11 @@
+metadata:
+  name: extauth
+  namespace: gloo-system
+  resourceVersion: "2"
+static:
+  hosts:
+  - addr: extauth
+    port: 8083
+status:
+  reportedBy: gloo
+  state: Accepted
