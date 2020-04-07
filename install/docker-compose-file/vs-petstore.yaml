@@ -1,0 +1,15 @@
+#Kind: VirtualService
+metadata:
+  name: petstore
+  namespace: gloo-system
+virtualHost:
+  domains:
+  - '*'
+  routes:
+  - matchers:
+    - exact: /
+    routeAction:
+      single:
+        upstream:
+          name: petstore
+          namespace: gloo-system
