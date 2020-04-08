@@ -1,0 +1,13 @@
+metadata:
+  name: ratelimit
+  namespace: gloo-system
+  resourceVersion: "2"
+static:
+  hosts:
+  - addr: ratelimit
+    port: 18081
+  serviceSpec:
+      grpc: {}
+status:
+  reportedBy: gloo
+  state: Accepted

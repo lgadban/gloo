@@ -9,6 +9,10 @@ extauth:
   extauthzServerRef:
     name: extauth
     namespace: gloo-system
+ratelimitServer:
+  ratelimit_server_ref:
+    name: ratelimit
+    namespace: gloo-system
 directoryArtifactSource:
   directory: /data/artifact
 directoryConfigSource:
