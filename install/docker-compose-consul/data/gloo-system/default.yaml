@@ -1,4 +1,3 @@
-
 gloo:
   xdsBindAddr: 0.0.0.0:9977
 consul:
@@ -14,3 +13,12 @@ refreshRate: 15s
 vaultSecretSource:
   address: http://vault:8200
   token: root
+extauth:
+  extauthzServerRef:
+    name: extauth
+    namespace: gloo-system
+ratelimitServer:
+  ratelimit_server_ref:
+    name: ratelimit
+    namespace: gloo-system
+
