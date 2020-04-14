@@ -17,8 +17,11 @@ static_resources:
               socket_address:
                 address: gloo
                 port_value: 9977
+                # address: 35.192.160.247
+                # port_value: 32412
     http2_protocol_options: {}
     type: STRICT_DNS
+    # type: STATIC
 dynamic_resources:
   ads_config:
     api_type: GRPC
