@@ -1,11 +1,14 @@
 metadata:
   name: extauth
   namespace: gloo-system
-  resourceVersion: "2"
+  resourceVersion: "3"
 static:
   hosts:
   - addr: extauth
     port: 8083
+  serviceSpec:
+    grpc: {}
+useHttp2: true
 status:
   reportedBy: gloo
   state: Accepted
