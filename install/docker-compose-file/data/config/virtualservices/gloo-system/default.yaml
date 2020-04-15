@@ -1,7 +1,7 @@
 metadata:
   name: default
   namespace: gloo-system
-  resourceVersion: "7"
+  resourceVersion: "12"
 status:
   reportedBy: gateway
   state: Accepted
@@ -12,6 +12,11 @@ status:
 virtualHost:
   domains:
   - '*'
+  options:
+    extauth:
+      configRef:
+        name: apikey-auth
+        namespace: gloo-system
   routes:
   - matchers:
     - prefix: /

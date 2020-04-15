@@ -45,8 +45,10 @@ services:
    - GLOO_ADDRESS=gloo:9977
    - SERVER_PORT=8083
    - GLOO_LICENSE_KEY=$KEY_HERE
+   - START_STATS_SERVER=true
    ports:
    - "8083:8083"
+   - "9092:9091"
 
   ratelimit:
    image: quay.io/solo-io/rate-limit-ee:1.3.0
