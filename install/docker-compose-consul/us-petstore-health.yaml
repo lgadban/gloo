@@ -1,0 +1,22 @@
+consul:
+  dataCenters:
+  - dc1
+  serviceName: petstore
+healthChecks:
+- httpHealthCheck:
+    path: /api/pets
+  healthyThreshold: 1
+  unhealthyThreshold: 5
+  timeout: 1s
+  interval: 30s
+  interval_jitter: 1s
+metadata:
+  labels:
+    discovered_by: consulplugin
+  name: petstore
+  namespace: gloo-system
+  resourceVersion: "118"
+status:
+  reportedBy: gloo
+  state: Accepted
+
