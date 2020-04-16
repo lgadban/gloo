@@ -1,0 +1,10 @@
+metadata:
+  name: opa
+  namespace: gloo-system
+configs:
+- opa_auth:
+    modules:
+    - name: opa-policy
+      namespace: gloo-system
+    query: "data.test.allow == true"
+

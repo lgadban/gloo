@@ -1,0 +1,11 @@
+consul:
+  dataCenters:
+  - dc1
+  serviceName: extauth
+useHttp2: true
+metadata:
+  labels:
+    discovered_by: consulplugin
+  name: extauth
+  namespace: gloo-system
+

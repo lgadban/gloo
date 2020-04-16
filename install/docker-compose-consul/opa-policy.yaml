@@ -1,0 +1,13 @@
+data:
+  policy.rego: |
+    package test
+
+    default allow = false
+    allow {
+        startswith(input.http_request.path, "/all-pets")
+        input.http_request.method == "GET"
+    }
+metadata:
+  name: opa-policy
+  namespace: gloo-system
+
