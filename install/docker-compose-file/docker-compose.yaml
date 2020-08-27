@@ -72,7 +72,7 @@ services:
   #  - plugin
 
   plugin:
-    image: "gloo-ext-auth-plugin-required_header-1.4.6:0.0.2"
+    image: "lgadban/ext-auth-plugin-required_header-1.4.6:0.0.1"
     working_dir: /
     volumes:
       - "./data/auth-plugins:/auth-plugins/"
