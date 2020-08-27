@@ -40,6 +40,8 @@ services:
 
   extauth:
     image: quay.io/solo-io/extauth-ee:1.4.6
+    entrypoint: ["/bin/sh"]
+    command: ["-c", "sleep 10 && /usr/local/bin/extauth"]
     environment:
     - SERVICE_NAME=ext-auth
     - GLOO_ADDRESS=gloo:9977
