@@ -12,6 +12,11 @@ listeners:
           namespace: gloo-system
           observedGeneration: 0
       name: gloo-system.default
+      options:
+        extauth:
+          configRef:
+            name: plugin-auth
+            namespace: gloo-system
       routes:
       - matchers:
         - prefix: /
@@ -50,7 +55,7 @@ metadata:
     created_by: gateway
   name: gateway-proxy
   namespace: gloo-system
-  resourceVersion: "7"
+  resourceVersion: "55"
 status:
   reportedBy: gloo
   state: Accepted

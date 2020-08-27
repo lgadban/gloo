@@ -1,0 +1,17 @@
+configs:
+- pluginAuth:
+    config:
+      AllowedValues:
+      - foo
+      - bar
+      RequiredHeader: my-header
+    exportedSymbolName: Plugin
+    name: RequiredHeader
+    pluginFileName: RequiredHeader.so
+metadata:
+  name: plugin-auth
+  namespace: gloo-system
+  resourceVersion: "4"
+status:
+  reportedBy: gloo
+  state: Accepted
