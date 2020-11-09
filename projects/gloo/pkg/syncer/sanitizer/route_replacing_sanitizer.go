@@ -29,6 +29,7 @@ import (
 	"github.com/solo-io/gloo/projects/gloo/pkg/xds"
 	"github.com/solo-io/go-utils/contextutils"
 	envoycache "github.com/solo-io/solo-kit/pkg/api/v1/control-plane/cache"
+	skcore "github.com/solo-io/solo-kit/pkg/api/v1/resources/core"
 	"github.com/solo-io/solo-kit/pkg/api/v2/reporter"
 )
 
@@ -169,7 +170,7 @@ func (s *RouteReplacingSanitizer) SanitizeSnapshot(ctx context.Context, glooSnap
 	}
 
 	// mark all valid destination clusters
-	validClusters := getClusters(glooSnapshot)
+	validClusters := getClusters(glooSnapshot, ctx)
 
 	replacedRouteConfigs, needsListener := s.replaceMissingClusterRoutes(ctx, validClusters, routeConfigs)
 
@@ -215,12 +216,17 @@ func getRoutes(snap envoycache.Snapshot) ([]*envoyapi.RouteConfiguration, error)
 	return routeConfigs, nil
 }
 
-func getClusters(snap *v1.ApiSnapshot) map[string]struct{} {
+func getClusters(snap *v1.ApiSnapshot, ctx context.Context) map[string]struct{} {
 	// mark all valid destination clusters
 	validClusters := make(map[string]struct{})
 	for _, up := range snap.Upstreams.AsInputResources() {
 		clusterName := translator.UpstreamToClusterName(up.GetMetadata().Ref())
-		validClusters[clusterName] = struct{}{}
+		status := up.GetStatus()
+		if state := status.GetState(); state == skcore.Status_Rejected {
+			contextutils.LoggerFrom(ctx).Infow("rejected upstream found, will be treated as an invalid cluster", zap.Any("cluster", clusterName))
+		} else {
+			validClusters[clusterName] = struct{}{}
+		}
 	}
 	return validClusters
 }

@@ -30,6 +30,17 @@ var _ = Describe("RouteReplacingSanitizer", func() {
 		}
 		clusterName = translator.UpstreamToClusterName(us.Metadata.Ref())
 
+		rejectedUpstream = &v1.Upstream{
+			Metadata: core.Metadata{
+				Name:      "rejected",
+				Namespace: "upstream",
+			},
+			Status: core.Status{
+				State: core.Status_Rejected,
+			},
+		}
+		rejectedClusterName = translator.UpstreamToClusterName(rejectedUpstream.Metadata.Ref())
+
 		missingCluster = "missing_cluster"
 
 		validRouteSingle = &route.Route{
@@ -66,6 +77,16 @@ var _ = Describe("RouteReplacingSanitizer", func() {
 				Route: &route.RouteAction{
 					ClusterSpecifier: &route.RouteAction_Cluster{
 						Cluster: missingCluster,
+					},
+				},
+			},
+		}
+
+		rejectedClusterRouteSingle = &route.Route{
+			Action: &route.Route_Route{
+				Route: &route.RouteAction{
+					ClusterSpecifier: &route.RouteAction_Cluster{
+						Cluster: rejectedClusterName,
 					},
 				},
 			},
@@ -150,6 +171,7 @@ var _ = Describe("RouteReplacingSanitizer", func() {
 		})
 		Expect(err).NotTo(HaveOccurred())
 	})
+
 	It("replaces routes which point to a missing cluster", func() {
 		routeCfg := &envoyapi.RouteConfiguration{
 			Name: routeCfgName,
@@ -210,6 +232,75 @@ var _ = Describe("RouteReplacingSanitizer", func() {
 
 		glooSnapshot := &v1.ApiSnapshot{
 			Upstreams: v1.UpstreamList{us},
+		}
+
+		snap, err := sanitizer.SanitizeSnapshot(context.TODO(), glooSnapshot, xdsSnapshot, reports)
+		Expect(err).NotTo(HaveOccurred())
+
+		routeCfgs := snap.GetResources(xds.RouteType)
+		listeners := snap.GetResources(xds.ListenerType)
+		clusters := snap.GetResources(xds.ClusterType)
+
+		sanitizedRoutes := routeCfgs.Items[routeCfg.GetName()]
+		listenersWithFallback := listeners.Items[fallbackListenerName]
+		clustersWithFallback := clusters.Items[fallbackClusterName]
+
+		Expect(sanitizedRoutes.ResourceProto()).To(Equal(expectedRoutes))
+		Expect(listenersWithFallback.ResourceProto()).To(Equal(sanitizer.fallbackListener))
+		Expect(clustersWithFallback.ResourceProto()).To(Equal(sanitizer.fallbackCluster))
+	})
+
+	It("replaces routes which point to a rejected cluster", func() {
+		routeCfg := &envoyapi.RouteConfiguration{
+			Name: routeCfgName,
+			VirtualHosts: []*route.VirtualHost{
+				{
+					Routes: []*route.Route{
+						validRouteSingle,
+						rejectedClusterRouteSingle,
+					},
+				},
+			},
+		}
+
+		expectedRoutes := &envoyapi.RouteConfiguration{
+			Name: routeCfgName,
+			VirtualHosts: []*route.VirtualHost{
+				{
+					Routes: []*route.Route{
+						validRouteSingle,
+						fixedRouteSingle,
+					},
+				},
+			},
+		}
+
+		xdsSnapshot := xds.NewSnapshotFromResources(
+			envoycache.NewResources("", nil),
+			envoycache.NewResources("", nil),
+			envoycache.NewResources("routes", []envoycache.Resource{
+				xds.NewEnvoyResource(routeCfg),
+			}),
+			envoycache.NewResources("listeners", []envoycache.Resource{
+				xds.NewEnvoyResource(listener),
+			}),
+		)
+
+		sanitizer, err := NewRouteReplacingSanitizer(invalidCfgPolicy)
+		Expect(err).NotTo(HaveOccurred())
+
+		// should have a warning to trigger this sanitizer
+		reports := reporter.ResourceReports{
+			&v1.Proxy{}: {
+				Warnings: []string{"route with missing upstream"},
+			},
+		}
+
+		glooSnapshot := &v1.ApiSnapshot{
+			Upstreams: v1.UpstreamList{
+				rejectedUpstream,
+				us,
+			},
 		}
 
 		snap, err := sanitizer.SanitizeSnapshot(context.TODO(), glooSnapshot, xdsSnapshot, reports)
